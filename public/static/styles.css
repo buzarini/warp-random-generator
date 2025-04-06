@@ -1,33 +1,46 @@
+/**
+ * Основные стили body
+ */
 body {
     display: flex;
     justify-content: center;
     align-items: center;
- 
     background-color: #f4f4f4;
     font-family: 'Roboto', sans-serif;
-    width: 100%; /* Занимает всю ширину */
-    margin: 0; /* Убираем отступы */
+    width: 100%;
+    margin: 0;
 }
+
+/**
+ * Основной контейнер
+ */
 .container {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Центрируем элементы по горизонтали */
-    text-align: center; /* Центрируем текст внутри элементов */
+    align-items: center;
+    text-align: center;
     width: 100%;
-    max-width: 700px; /* Ограничиваем ширину контейнера */
-    margin: 0 auto; /* Центрируем контейнер на странице */
-    padding: 20px; /* Добавляем отступы */
-}
-.grid-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Два столбца */
-    gap: 20px; /* Расстояние между контейнерами */
-    width: 100%;
-    max-width: 700px; /* Увеличиваем максимальную ширину, чтобы вместить два контейнера */
-    margin: 0 auto 20px; /* Центрируем и добавляем отступ снизу */
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-.containerAWG, .containerClash {
+/**
+ * Сетка контейнеров
+ */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    width: 100%;
+    max-width: 680px;
+    margin: 0 auto 20px;
+}
+
+/**
+ * Контейнеры AWG
+ */
+.containerAWG {
     display: flex;
     flex-direction: column;
     text-align: center;
@@ -36,51 +49,52 @@ body {
     background-color: white;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
-    width: 95%; /* Занимает всю ширину */
-    max-width: 300px; /* Уменьшаем ширину контейнера */
-    margin: 0 auto; /* Центрируем и добавляем отступ снизу */
+    width: 95%;
+    max-width: 290px;
+    margin: 0 auto;
 }
 
+/**
+ * Шапка
+ */
 .header {
     display: flex;
-    justify-content: center; /* Выравниваем по центру */
+    justify-content: center;
     align-items: center;
-    margin-bottom: 10px; /* Отступ снизу */
-    width: 100%; /* Занимает всю ширину */
-    max-width: 400px; /* Ограничиваем ширину, как у контейнера */\
+    margin-bottom: 10px;
+    width: 100%;
+    max-width: 400px;
 }
 
+/**
+ * Иконка Amnezia
+ */
 .amnezia-icon {
-    width: 50px; /* Размер иконки */
+    width: 50px;
     height: 50px;
     margin-right: 10px;
-	margin-top: -10px;
-}
-.hiddify-icon {
-    width: 45px; /* Размер иконки */
-    height: 45px;
-    margin-right: 10px;
-	margin-top: -10px;
+    margin-top: -10px;
 }
 
+/**
+ * Текст Amnezia
+ */
 .amnezia-text {
     font-size: 20px;
     font-weight: bold;
     color: #333;
-	
-}
-.karing-text {
-    font-size: 20px;
-    font-weight: bold;
-    color: #333;
-	margin-right: 10px;
 }
 
+/**
+ * Базовые стили изображений
+ */
 img {
     max-width: 400px;
 }
 
-
+/**
+ * Базовые стили кнопок
+ */
 button {
     width: 100%;
     margin-bottom: 20px;
@@ -90,12 +104,20 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-	transition: background 0.3s ease, transform 0.2s ease;
+    transition: background 0.3s ease, transform 0.2s ease;
 }
+
+/**
+ * Кнопки при наведении
+ */
 button:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-} 
+}
+
+/**
+ * Индикатор загрузки кнопок
+ */
 .button--loading::after {
     content: "";
     width: 15px;
@@ -115,96 +137,103 @@ button.button--loading {
     display: none;
 }
 
-#generateButton,#generateButton2,#generateButton5,#generateButton6 {
+/**
+ * Основные кнопки генерации
+ */
+#generateButton,
+#generateButton2,
+#generateButton3,
+#generateButton4,
+#generateButton5,
+#generateButton7,
+#generateButton8,
+#generateButton9,
+#generateButton10,
+#generateButton11 {
     background: linear-gradient(90deg, #eeac43, #f15874);
 }
-#generateButton3,#generateButton4,#generateButton7,#generateButton8 {
-    background: linear-gradient(90deg, #eeac43, #f15874);margin-bottom: 4px;
+
+/**
+ * Специальные кнопки генерации
+ */
+#generateButton6,
+#generateButton12 {
+    background: linear-gradient(90deg, #eeac43, #f15874);
+    margin-bottom: 4px;
 }
 
-#telegramButton,#BoostyButton,#githubButton,#DonationAlertsButton,#BoostyNewButton {
+/**
+ * Кнопка GitHub
+ */
+#githubButton {
     background: linear-gradient(90deg, #2a3797, #0d87d2);
-	width: 100%;
-    max-width: 400px;
+    width: 100%;
+    max-width: 330px;
     margin: 10px auto;
 }
 
-
+/**
+ * Отключенные кнопки
+ */
 button:disabled {
     cursor: not-allowed;
     opacity: 0.7;
 }
 
+/**
+ * Анимация вращения
+ */
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-#newButtons {
-    visibility: hidden;
-    opacity: 0;
-    height: 0;
-    overflow: hidden;
-    transition: opacity 0.5s ease, height 0.5s ease, visibility 0.5s ease;
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
-#newButtons.show {
-    visibility: visible;
-    opacity: 1;
-    height: 120px; /* Фиксированная высота для плавной анимации */
-}	
-
-
-
+/**
+ * Блок информации
+ */
 #info {
     margin-bottom: 20px;
     color: red;
-	border-radius: 5px;
-	box-shadow: 0 0 0 1px red inset;
-	padding: 15px;
-	margin: 0 auto 20px;
-	display: none;
-}
-
-
-#status {
-    color: red;
-	border-radius: 5px;
-	box-shadow: 0 0 0 1px red inset;
-	padding: 15px;
-	margin: 0 auto 20px;
-}
-
-#status:empty {
+    border-radius: 5px;
+    box-shadow: 0 0 0 1px red inset;
+    padding: 15px;
+    margin: 0 auto 20px;
     display: none;
 }
 
+/**
+ * Блок статуса
+ */
+#status {
+    color: red;
+    border-radius: 5px;
+    box-shadow: 0 0 0 1px red inset;
+    padding: 15px;
+    margin: 0 auto 20px;
+}
+
+#status:empty,
 #info:empty {
     display: none;
 }
 
+/**
+ * Мобильная адаптация
+ */
 @media (max-width: 730px) {
-	       
-	.grid-container {
-		grid-template-columns: 1fr; /* Один столбец на мобильных устройствах */}
-	#info {
-        display: block; /* или inline, inline-block, flex и т.д., в зависимости от нужного отображения */
-   }
-   
-   #status {
-        display: none; /* или inline, inline-block, flex и т.д., в зависимости от нужного отображения */
-   }
-   
-	.containerClash {
-	
-		order: 3; /* Перемещаем Clash вниз */
+    .grid-container {
+        grid-template-columns: 1fr;
     }
 
-    .containerAWG:nth-of-type(4) { /* Блок NekoBox */
-        order: 2;		/* Перемещаем NekoBox на место Clash */
+    #info {
+        display: block;
     }
-	.containerAWG:nth-of-type(2) { /* Блок NekoBox */
-        margin-bottom: 60px;		/* Перемещаем NekoBox на место Clash */
-    }
-		
+
+    #status {
+        display: none;
     }
 }
