@@ -1,135 +1,62 @@
 const express = require('express');
-const { getWarpConfigLink } = require('./AWGp');
-const { getWarpConfigLink2 } = require('./Karing');
-const { getWarpConfigLink3 } = require('./WarpInWarp');
-const { getWarpConfigLink4 } = require('./AWGr');
-const { getWarpConfigLink5 } = require('./Neko');
-const { getWarpConfigLink6 } = require('./AWGm');
-const { getWarpConfigLink7 } = require('./Clash');
-const { getWarpConfigLink8 } = require('./Husi');
 const path = require('path');
+const {
+    getWarpConfigLink,
+    getWarpConfigLink2,
+    getWarpConfigLink3,
+    getWarpConfigLink4,
+    getWarpConfigLink5,
+    getWarpConfigLink6,
+    getWarpConfigLink7,
+    getWarpConfigLink8,
+    getWarpConfigLink9,
+    getWarpConfigLink10,
+    getWarpConfigLink11,
+    getWarpConfigLink12
+} = require('./AWGR');
 
 const app = express();
 
-// Подключаем статические файлы
+/** Middleware для статических файлов */
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Главная страница
+/** Обработчик главной страницы */
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Маршрут для генерации конфига
-app.get('/warp', async (req, res) => {
+/** Фабрика обработчиков для warp-маршрутов */
+const createWarpHandler = (generator) => async (req, res) => {
     try {
-        const content = await getWarpConfigLink();
-        if (content) {
-            res.json({ success: true, content });
-        } else {
-            res.status(500).json({ success: false, message: 'Не удалось сгенерировать конфиг.' });
-        }
+        const content = await generator();
+        content
+            ? res.json({ success: true, content })
+            : res.status(500).json({ success: false, message: 'Ошибка генерации конфига' });
     } catch (error) {
-        console.error('Ошибка при обработке запроса:', error);
-        res.status(500).json({ success: false, message: 'Произошла ошибка на сервере.' });
+        console.error('Ошибка запроса:', error);
+        res.status(500).json({ success: false, message: 'Ошибка сервера' });
     }
-});
+};
 
-app.get('/warp2', async (req, res) => {
-    try {
-        const content = await getWarpConfigLink2();
-        if (content) {
-            res.json({ success: true, content });
-        } else {
-            res.status(500).json({ success: false, message: 'Не удалось сгенерировать конфиг.' });
-        }
-    } catch (error) {
-        console.error('Ошибка при обработке запроса:', error);
-        res.status(500).json({ success: false, message: 'Произошла ошибка на сервере.' });
-    }
-});
+/** Маршруты */
+const routes = [
+    { path: '/warp', handler: getWarpConfigLink },
+    { path: '/warp2', handler: getWarpConfigLink2 },
+    { path: '/warp3', handler: getWarpConfigLink3 },
+    { path: '/warp4', handler: getWarpConfigLink4 },
+    { path: '/warp5', handler: getWarpConfigLink5 },
+    { path: '/warp6', handler: getWarpConfigLink6 },
+    { path: '/warp7', handler: getWarpConfigLink7 },
+    { path: '/warp8', handler: getWarpConfigLink8 },
+    { path: '/warp9', handler: getWarpConfigLink9 },
+    { path: '/warp10', handler: getWarpConfigLink10 },
+    { path: '/warp11', handler: getWarpConfigLink11 },
+    { path: '/warp12', handler: getWarpConfigLink12 }
+];
 
-app.get('/warp3', async (req, res) => {
-    try {
-        const content = await getWarpConfigLink3();
-        if (content) {
-            res.json({ success: true, content });
-        } else {
-            res.status(500).json({ success: false, message: 'Не удалось сгенерировать конфиг.' });
-        }
-    } catch (error) {
-        console.error('Ошибка при обработке запроса:', error);
-        res.status(500).json({ success: false, message: 'Произошла ошибка на сервере.' });
-    }
-});
-
-app.get('/warp4', async (req, res) => {
-    try {
-        const content = await getWarpConfigLink4();
-        if (content) {
-            res.json({ success: true, content });
-        } else {
-            res.status(500).json({ success: false, message: 'Не удалось сгенерировать конфиг.' });
-        }
-    } catch (error) {
-        console.error('Ошибка при обработке запроса:', error);
-        res.status(500).json({ success: false, message: 'Произошла ошибка на сервере.' });
-    }
-});
-
-app.get('/warp5', async (req, res) => {
-    try {
-        const content = await getWarpConfigLink5();
-        if (content) {
-            res.json({ success: true, content });
-        } else {
-            res.status(500).json({ success: false, message: 'Не удалось сгенерировать конфиг.' });
-        }
-    } catch (error) {
-        console.error('Ошибка при обработке запроса:', error);
-        res.status(500).json({ success: false, message: 'Произошла ошибка на сервере.' });
-    }
-});
-
-app.get('/warp6', async (req, res) => {
-    try {
-        const content = await getWarpConfigLink6();
-        if (content) {
-            res.json({ success: true, content });
-        } else {
-            res.status(500).json({ success: false, message: 'Не удалось сгенерировать конфиг.' });
-        }
-    } catch (error) {
-        console.error('Ошибка при обработке запроса:', error);
-        res.status(500).json({ success: false, message: 'Произошла ошибка на сервере.' });
-    }
-});
-
-app.get('/warp7', async (req, res) => {
-    try {
-        const content = await getWarpConfigLink7();
-        if (content) {
-            res.json({ success: true, content });
-        } else {
-            res.status(500).json({ success: false, message: 'Не удалось сгенерировать конфиг.' });
-        }
-    } catch (error) {
-        console.error('Ошибка при обработке запроса:', error);
-        res.status(500).json({ success: false, message: 'Произошла ошибка на сервере.' });
-    }
-});
-
-app.get('/warp8', async (req, res) => {
-    try {
-        const content = await getWarpConfigLink8();
-        if (content) {
-            res.json({ success: true, content });
-        } else {
-            res.status(500).json({ success: false, message: 'Не удалось сгенерировать конфиг.' });
-        }
-    } catch (error) {
-        console.error('Ошибка при обработке запроса:', error);
-        res.status(500).json({ success: false, message: 'Произошла ошибка на сервере.' });
-    }
+/** Регистрация маршрутов */
+routes.forEach(route => {
+    app.get(route.path, createWarpHandler(route.handler));
 });
 
 module.exports = app;
