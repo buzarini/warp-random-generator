@@ -61,10 +61,12 @@ async function apiRequest(method, endpoint, body = null, token = null) {
     return response.json();
 }
 
-async function generateWarpConfig() {
+async function generateWarpConfig(
+    dns = "1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001",
+    allowedIPs = "0.0.0.0/0, ::/0"
+) {
     const { privKey, pubKey } = generateKeys();
 
-    // Регистрация устройства
     const regBody = {
         install_id: "",
         tos: new Date().toISOString(),
@@ -78,7 +80,6 @@ async function generateWarpConfig() {
     const id = regResponse.result.id;
     const token = regResponse.result.token;
 
-    // Включение WARP
     const warpResponse = await apiRequest('PATCH', `reg/${id}`, { warp_enabled: true }, token);
 
     const peer_pub = warpResponse.result.config.peers[0].public_key;
@@ -86,46 +87,46 @@ async function generateWarpConfig() {
     const client_ipv4 = warpResponse.result.config.interface.addresses.v4;
     const client_ipv6 = warpResponse.result.config.interface.addresses.v6;
 
-    // Генерация случайного endpoint
-    const randomEndpoint = generateRandomEndpoint();
+    // Случайный Endpoint из списка (пример)
+    const randomEndpoints = [
+        "8.47.69.0:1002",
+        "8.47.69.1:1002",
+        "8.47.69.2:1002"
+    ];
+    const randomEndpoint = randomEndpoints[Math.floor(Math.random() * randomEndpoints.length)];
 
-    // Получаем случайные параметры Jc, Jmin, Jmax
-    const jcParams = getRandomJcParams();
-
-    // Формируем конфиг
     const conf = `[Interface]
 PrivateKey = ${privKey}
 S1 = 0
 S2 = 0
-${jcParams}
+Jc = 4
+Jmin = 40
+Jmax = 70
 H1 = 1
 H2 = 2
 H3 = 3
 H4 = 4
 MTU = 1280
 Address = ${client_ipv4}, ${client_ipv6}
-DNS = 1.1.1.1, 2606:4700:4700::1111, 1.0.0.1, 2606:4700:4700::1001
+DNS = ${dns}
 
 [Peer]
 PublicKey = ${peer_pub}
-AllowedIPs = 0.0.0.0/0, ::/0
-Endpoint = ${randomEndpoint}`;
+AllowedIPs = ${allowedIPs}
+Endpoint = ${randomEndpoint}`; // Случайный Endpoint для AWGr
 
-    // Возвращаем конфиг
     return conf;
 }
 
-// Основная функция для генерации ссылки на скачивание конфига
-async function getWarpConfigLink4() {
+async function getWarpConfigLink4(dns, allowedIPs) {
     try {
-        const conf = await generateWarpConfig();
+        const conf = await generateWarpConfig(dns, allowedIPs);
         const confBase64 = Buffer.from(conf).toString('base64');
-        return `${confBase64}`;
+        return confBase64;
     } catch (error) {
         console.error('Ошибка при генерации конфига:', error);
         return null;
     }
 }
 
-// Экспортируем функцию для использования
 module.exports = { getWarpConfigLink4 };
