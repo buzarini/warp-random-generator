@@ -20,9 +20,10 @@ app.get('/', (req, res) => {
 });
 
 // Маршрут для генерации конфига
-app.get('/warp', async (req, res) => {
+app.post('/warp', async (req, res) => {
     try {
-        const content = await getWarpConfigLink();
+        const { dns, allowedIPs } = req.body;
+        const content = await getWarpConfigLink(dns, allowedIPs);
         if (content) {
             res.json({ success: true, content });
         } else {
@@ -62,9 +63,10 @@ app.get('/warp3', async (req, res) => {
     }
 });
 
-app.get('/warp4', async (req, res) => {
+app.post('/warp4', async (req, res) => {
     try {
-        const content = await getWarpConfigLink4();
+        const { dns, allowedIPs } = req.body;
+        const content = await getWarpConfigLink4(dns, allowedIPs);
         if (content) {
             res.json({ success: true, content });
         } else {
@@ -90,9 +92,10 @@ app.get('/warp5', async (req, res) => {
     }
 });
 
-app.get('/warp6', async (req, res) => {
+app.post('/warp6', async (req, res) => {
     try {
-        const content = await getWarpConfigLink6();
+        const { dns, allowedIPs } = req.body; // Получаем DNS и IP-адреса
+        const content = await getWarpConfigLink6(dns, allowedIPs); // Передаем оба параметра
         if (content) {
             res.json({ success: true, content });
         } else {
