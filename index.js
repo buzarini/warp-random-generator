@@ -20,10 +20,9 @@ app.get('/', (req, res) => {
 });
 
 // Маршрут для генерации конфига
-app.post('/warp', async (req, res) => {
+app.get('/warp', async (req, res) => {
     try {
-        const { dns, allowedIPs } = req.body;
-        const content = await getWarpConfigLink(dns, allowedIPs);
+        const content = await getWarpConfigLink();
         if (content) {
             res.json({ success: true, content });
         } else {
@@ -63,10 +62,9 @@ app.get('/warp3', async (req, res) => {
     }
 });
 
-app.post('/warp4', async (req, res) => {
+app.get('/warp4', async (req, res) => {
     try {
-        const { dns, allowedIPs } = req.body;
-        const content = await getWarpConfigLink4(dns, allowedIPs);
+        const content = await getWarpConfigLink4();
         if (content) {
             res.json({ success: true, content });
         } else {
@@ -92,32 +90,17 @@ app.get('/warp5', async (req, res) => {
     }
 });
 
-app.post('/warp6', async (req, res) => {
+app.get('/warp6', async (req, res) => {
     try {
-        console.log('Received request with body:', req.body);
-        const { dns, allowedIPs } = req.body;
-        
-        if (!dns || !allowedIPs) {
-            return res.status(400).json({ 
-                success: false, 
-                message: 'Missing required parameters: dns and allowedIPs' 
-            });
+        const content = await getWarpConfigLink6();
+        if (content) {
+            res.json({ success: true, content });
+        } else {
+            res.status(500).json({ success: false, message: 'Не удалось сгенерировать конфиг.' });
         }
-
-        const config = await generateWarpConfig(dns, allowedIPs);
-        const content = Buffer.from(config).toString('base64');
-        
-        res.json({ 
-            success: true, 
-            content 
-        });
     } catch (error) {
-        console.error('Error in /warp6:', error);
-        res.status(500).json({ 
-            success: false, 
-            message: 'Failed to generate config',
-            error: error.message 
-        });
+        console.error('Ошибка при обработке запроса:', error);
+        res.status(500).json({ success: false, message: 'Произошла ошибка на сервере.' });
     }
 });
 
