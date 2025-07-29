@@ -34,7 +34,10 @@ async function apiRequest(method, endpoint, body = null, token = null) {
     return response.json();
 }
 
-async function generateWarpConfig() {
+async function generateWarpConfig(
+    dns = "1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001",
+    allowedIPs = "0.0.0.0/0, ::/0" 
+) {
     const { privKey, pubKey } = generateKeys();
 
     // Регистрация устройства
@@ -59,7 +62,7 @@ async function generateWarpConfig() {
     const client_ipv4 = warpResponse.result.config.interface.addresses.v4;
     const client_ipv6 = warpResponse.result.config.interface.addresses.v6;
 
-    // Формируем конфиг
+    // Формируем конфиг с переданным DNS
     const conf = `[Interface]
 PrivateKey = ${privKey}
 S1 = 0
@@ -73,28 +76,25 @@ H3 = 3
 H4 = 4
 MTU = 1280
 Address = ${client_ipv4}, ${client_ipv6}
-DNS = 1.1.1.1, 2606:4700:4700::1111, 1.0.0.1, 2606:4700:4700::1001
+DNS = ${dns}
 
 [Peer]
 PublicKey = ${peer_pub}
-AllowedIPs = 0.0.0.0/0, ::/0
+AllowedIPs = ${allowedIPs}
 Endpoint = 8.47.69.0:1002`;
 
-    // Возвращаем конфиг
     return conf;
 }
 
-// Основная функция для генерации ссылки на скачивание конфига
-async function getWarpConfigLink6() {
+async function getWarpConfigLink6(dns, allowedIPs) {
     try {
-        const conf = await generateWarpConfig();
+        const conf = await generateWarpConfig(dns, allowedIPs);
         const confBase64 = Buffer.from(conf).toString('base64');
-        return `${confBase64}`;
+        return confBase64;
     } catch (error) {
         console.error('Ошибка при генерации конфига:', error);
         return null;
     }
 }
 
-// Экспортируем функцию для использования
 module.exports = { getWarpConfigLink6 };
