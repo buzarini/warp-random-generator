@@ -2,78 +2,99 @@ const fetch = require('node-fetch');
 const nacl = require('tweetnacl');
 const { Buffer } = require('buffer');
 
-async function generateWarpConfig(dns = "1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001", allowedIPs = "0.0.0.0/0, ::/0") {
-    try {
-        console.log('Generating keys...');
-        const keyPair = nacl.box.keyPair();
-        const privKey = Buffer.from(keyPair.secretKey).toString('base64');
-        const pubKey = Buffer.from(keyPair.publicKey).toString('base64');
+function generateKeys() {
+    const keyPair = nacl.box.keyPair();
+    return {
+        privKey: Buffer.from(keyPair.secretKey).toString('base64'),
+        pubKey: Buffer.from(keyPair.publicKey).toString('base64')
+    };
+}
 
-        console.log('Registering device...');
-        const regResponse = await fetch('https://api.cloudflareclient.com/v0a2222/reg', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'User-Agent': 'Mozilla/5.0',
-            },
-            body: JSON.stringify({
-                install_id: "",
-                tos: new Date().toISOString(),
-                key: pubKey,
-                fcm_token: "",
-                type: "Android",
-                locale: "en_US"
-            })
-        });
+// Функция для отправки запросов к API Cloudflare
+async function apiRequest(method, endpoint, body = null, token = null) {
+    const headers = {
+        'User-Agent': '',
+        'Content-Type': 'application/json',
+    };
 
-        if (!regResponse.ok) {
-            const error = await regResponse.text();
-            throw new Error(`Registration failed: ${regResponse.status} - ${error}`);
-        }
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
 
-        const regData = await regResponse.json();
-        console.log('Registration successful:', regData);
+    const options = {
+        method,
+        headers,
+    };
 
-        const token = regData.token;
-        const id = regData.id;
+    if (body) {
+        options.body = JSON.stringify(body);
+    }
 
-        console.log('Enabling WARP...');
-        const warpResponse = await fetch(`https://api.cloudflareclient.com/v0a2222/reg/${id}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify({ warp_enabled: true })
-        });
+    const response = await fetch(`https://api.cloudflareclient.com/v0i1909051800/${endpoint}`, options);
+    return response.json();
+}
 
-        if (!warpResponse.ok) {
-            const error = await warpResponse.text();
-            throw new Error(`WARP enable failed: ${warpResponse.status} - ${error}`);
-        }
+async function generateWarpConfig() {
+    const { privKey, pubKey } = generateKeys();
 
-        const warpData = await warpResponse.json();
-        console.log('WARP enabled:', warpData);
+    // Регистрация устройства
+    const regBody = {
+        install_id: "",
+        tos: new Date().toISOString(),
+        key: pubKey,
+        fcm_token: "",
+        type: "ios",
+        locale: "en_US"
+    };
+    const regResponse = await apiRequest('POST', 'reg', regBody);
 
-        if (!warpData.config || !warpData.config.peers || !warpData.config.interface) {
-            throw new Error('Invalid WARP configuration received');
-        }
+    const id = regResponse.result.id;
+    const token = regResponse.result.token;
 
-        const config = `[Interface]
+    // Включение WARP
+    const warpResponse = await apiRequest('PATCH', `reg/${id}`, { warp_enabled: true }, token);
+
+    const peer_pub = warpResponse.result.config.peers[0].public_key;
+    const peer_endpoint = warpResponse.result.config.peers[0].endpoint.host;
+    const client_ipv4 = warpResponse.result.config.interface.addresses.v4;
+    const client_ipv6 = warpResponse.result.config.interface.addresses.v6;
+
+    // Формируем конфиг
+    const conf = `[Interface]
 PrivateKey = ${privKey}
-Address = ${warpData.config.interface.addresses.v4}, ${warpData.config.interface.addresses.v6}
-DNS = ${dns}
+S1 = 0
+S2 = 0
+Jc = 4
+Jmin = 40
+Jmax = 70
+H1 = 1
+H2 = 2
+H3 = 3
+H4 = 4
+MTU = 1280
+Address = ${client_ipv4}, ${client_ipv6}
+DNS = 1.1.1.1, 2606:4700:4700::1111, 1.0.0.1, 2606:4700:4700::1001
 
 [Peer]
-PublicKey = ${warpData.config.peers[0].public_key}
-AllowedIPs = ${allowedIPs}
-Endpoint = ${warpData.config.peers[0].endpoint.host}:2408`;
+PublicKey = ${peer_pub}
+AllowedIPs = 0.0.0.0/0, ::/0
+Endpoint = 8.47.69.0:1002`;
 
-        return config;
+    // Возвращаем конфиг
+    return conf;
+}
+
+// Основная функция для генерации ссылки на скачивание конфига
+async function getWarpConfigLink6() {
+    try {
+        const conf = await generateWarpConfig();
+        const confBase64 = Buffer.from(conf).toString('base64');
+        return `${confBase64}`;
     } catch (error) {
-        console.error('Error in generateWarpConfig:', error);
-        throw error;
+        console.error('Ошибка при генерации конфига:', error);
+        return null;
     }
 }
 
-module.exports = { generateWarpConfig };
+// Экспортируем функцию для использования
+module.exports = { getWarpConfigLink6 };
