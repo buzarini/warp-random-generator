@@ -34,12 +34,10 @@ async function apiRequest(method, endpoint, body = null, token = null) {
     return response.json();
 }
 
-async function generateWarpConfig(
-    dns = "1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001",
-    allowedIPs = "0.0.0.0/0, ::/0"
-) {
+async function generateWarpConfig() {
     const { privKey, pubKey } = generateKeys();
 
+    // Регистрация устройства
     const regBody = {
         install_id: "",
         tos: new Date().toISOString(),
@@ -53,6 +51,7 @@ async function generateWarpConfig(
     const id = regResponse.result.id;
     const token = regResponse.result.token;
 
+    // Включение WARP
     const warpResponse = await apiRequest('PATCH', `reg/${id}`, { warp_enabled: true }, token);
 
     const peer_pub = warpResponse.result.config.peers[0].public_key;
@@ -60,38 +59,42 @@ async function generateWarpConfig(
     const client_ipv4 = warpResponse.result.config.interface.addresses.v4;
     const client_ipv6 = warpResponse.result.config.interface.addresses.v6;
 
+    // Формируем конфиг
     const conf = `[Interface]
 PrivateKey = ${privKey}
 S1 = 0
 S2 = 0
-Jc = 4
-Jmin = 40
-Jmax = 70
+Jc = 120
+Jmin = 23
+Jmax = 911
 H1 = 1
 H2 = 2
 H3 = 3
 H4 = 4
 MTU = 1280
 Address = ${client_ipv4}, ${client_ipv6}
-DNS = ${dns}
+DNS = 1.1.1.1, 2606:4700:4700::1111, 1.0.0.1, 2606:4700:4700::1001
 
 [Peer]
 PublicKey = ${peer_pub}
-AllowedIPs = ${allowedIPs}
-Endpoint = 8.47.69.0:1002`; // Фиксированный Endpoint для AWGp
+AllowedIPs = 0.0.0.0/0, ::/0
+Endpoint = engage.cloudflareclient.com:500`;
 
+    // Возвращаем конфиг
     return conf;
 }
 
-async function getWarpConfigLink(dns, allowedIPs) {
+// Основная функция для генерации ссылки на скачивание конфига
+async function getWarpConfigLink() {
     try {
-        const conf = await generateWarpConfig(dns, allowedIPs);
+        const conf = await generateWarpConfig();
         const confBase64 = Buffer.from(conf).toString('base64');
-        return confBase64;
+        return `${confBase64}`;
     } catch (error) {
         console.error('Ошибка при генерации конфига:', error);
         return null;
     }
 }
 
+// Экспортируем функцию для использования
 module.exports = { getWarpConfigLink };
