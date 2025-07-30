@@ -64,7 +64,8 @@ app.get('/warp3', async (req, res) => {
 
 app.get('/warp4', async (req, res) => {
     try {
-        const content = await getWarpConfigLink4();
+        const dns = req.query.dns || "1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001"; // Значение по умолчанию
+        const content = await getWarpConfigLink4(dns);
         if (content) {
             res.json({ success: true, content });
         } else {
