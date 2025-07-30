@@ -10,34 +10,25 @@ function generateKeys() {
     };
 }
 
-// Функция для генерации случайного endpoint
 function generateRandomEndpoint() {
-    const prefixes = ["188.114.96.", "188.114.97.", "188.114.98.", "188.114.99.", "162.159.192.", "162.159.195.", "8.47.69.", "8.6.112.", "8.34.146.", "8.35.211.", "8.39.204.", "8.39.214.", "8.34.70.", "8.39.125."];
+    const prefixes = ["188.114.96.", "188.114.97.", "188.114.98.", "188.114.99.", "162.159.192.", "162.159.195.", "8.47.69.", "8.6.112.", "8.34.146.", "8.35.211.", "8.39.204.", "8.39.214."];
     const ports = [500, 854, 859, 864, 878, 880, 890, 891, 894, 903, 908, 928, 934, 939, 942, 943, 945, 946, 955, 968, 987, 988, 1002, 1010, 1014, 1018, 1070, 1074, 1180, 1387, 1701, 1843, 2371, 2408, 2506, 3138, 3476, 3581, 3854, 4177, 4198, 4233, 4500, 5279, 5956, 7103, 7152, 7156, 7281, 7559, 8319, 8742, 8854, 8886];
-    
-    // Выбираем случайный префикс
+
     const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-    
-    // Генерируем случайное число от 0 до 255
     const randomNumber = Math.floor(Math.random() * 256);
-    
-    // Выбираем случайный порт
     const port = ports[Math.floor(Math.random() * ports.length)];
-    
-    // Формируем endpoint
+
     return `${prefix}${randomNumber}:${port}`;
 }
 
-    // Функция для случайного выбора параметров Jc, Jmin, Jmax
-    function getRandomJcParams() {
+function getRandomJcParams() {
     const options = [
         "Jc = 4\nJmin = 40\nJmax = 70",
         "Jc = 120\nJmin = 23\nJmax = 911"
     ];
     return options[Math.floor(Math.random() * options.length)];
 }
-    
-    // Функция для отправки запросов к API Cloudflare
+
 async function apiRequest(method, endpoint, body = null, token = null) {
     const headers = {
         'User-Agent': '',
@@ -61,10 +52,7 @@ async function apiRequest(method, endpoint, body = null, token = null) {
     return response.json();
 }
 
-async function generateWarpConfig(
-    dns = "1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001",
-    allowedIPs = "0.0.0.0/0, ::/0"
-) {
+async function generateWarpConfig() {
     const { privKey, pubKey } = generateKeys();
 
     const regBody = {
@@ -87,42 +75,35 @@ async function generateWarpConfig(
     const client_ipv4 = warpResponse.result.config.interface.addresses.v4;
     const client_ipv6 = warpResponse.result.config.interface.addresses.v6;
 
-    // Случайный Endpoint из списка (пример)
-    const randomEndpoints = [
-        "8.47.69.0:1002",
-        "8.47.69.1:1002",
-        "8.47.69.2:1002"
-    ];
-    const randomEndpoint = randomEndpoints[Math.floor(Math.random() * randomEndpoints.length)];
+    const randomEndpoint = generateRandomEndpoint();
+    const jcParams = getRandomJcParams();
 
     const conf = `[Interface]
 PrivateKey = ${privKey}
 S1 = 0
 S2 = 0
-Jc = 4
-Jmin = 40
-Jmax = 70
+${jcParams}
 H1 = 1
 H2 = 2
 H3 = 3
 H4 = 4
 MTU = 1280
 Address = ${client_ipv4}, ${client_ipv6}
-DNS = ${dns}
+DNS = 1.1.1.1, 2606:4700:4700::1111, 1.0.0.1, 2606:4700:4700::1001
 
 [Peer]
 PublicKey = ${peer_pub}
-AllowedIPs = ${allowedIPs}
-Endpoint = ${randomEndpoint}`; // Случайный Endpoint для AWGr
+AllowedIPs = 0.0.0.0/0, ::/0
+Endpoint = ${randomEndpoint}`;
 
     return conf;
 }
 
-async function getWarpConfigLink4(dns, allowedIPs) {
+async function getWarpConfigLink4() {
     try {
-        const conf = await generateWarpConfig(dns, allowedIPs);
+        const conf = await generateWarpConfig();
         const confBase64 = Buffer.from(conf).toString('base64');
-        return confBase64;
+        return `${confBase64}`;
     } catch (error) {
         console.error('Ошибка при генерации конфига:', error);
         return null;
