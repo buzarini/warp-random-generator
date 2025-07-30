@@ -10,42 +10,6 @@ function generateKeys() {
     };
 }
 
-// Функция для отправки запросов к API Cloudflare
-async function apiRequest(method, endpoint, body = null, token = null) {
-    const headers = {
-        'User-Agent': '',
-        'Content-Type': 'application/json',
-    };
-
-    if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    const options = {
-        method,
-        headers,
-    };
-
-    if (body) {
-        options.body = JSON.stringify(body);
-    }
-
-    const response = await fetch(`https://api.cloudflareclient.com/v0i1909051800/${endpoint}`, options);
-    return response.json();
-}
-
-const fetch = require('node-fetch');
-const nacl = require('tweetnacl');
-const { Buffer } = require('buffer');
-
-function generateKeys() {
-    const keyPair = nacl.box.keyPair();
-    return {
-        privKey: Buffer.from(keyPair.secretKey).toString('base64'),
-        pubKey: Buffer.from(keyPair.publicKey).toString('base64')
-    };
-}
-
 async function apiRequest(method, endpoint, body = null, token = null) {
     const headers = {
         'User-Agent': '',
