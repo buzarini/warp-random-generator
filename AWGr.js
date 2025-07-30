@@ -52,7 +52,7 @@ async function apiRequest(method, endpoint, body = null, token = null) {
     return response.json();
 }
 
-async function generateWarpConfig() {
+async function generateWarpConfig(dns = "1.1.1.1, 2606:4700:4700::1111, 1.0.0.1, 2606:4700:4700::1001") {
     const { privKey, pubKey } = generateKeys();
 
     const regBody = {
@@ -89,7 +89,7 @@ H3 = 3
 H4 = 4
 MTU = 1280
 Address = ${client_ipv4}, ${client_ipv6}
-DNS = 1.1.1.1, 2606:4700:4700::1111, 1.0.0.1, 2606:4700:4700::1001
+DNS = ${dns}
 
 [Peer]
 PublicKey = ${peer_pub}
@@ -99,9 +99,9 @@ Endpoint = ${randomEndpoint}`;
     return conf;
 }
 
-async function getWarpConfigLink4() {
+async function getWarpConfigLink4(dns) {
     try {
-        const conf = await generateWarpConfig();
+        const conf = await generateWarpConfig(dns);
         const confBase64 = Buffer.from(conf).toString('base64');
         return `${confBase64}`;
     } catch (error) {
