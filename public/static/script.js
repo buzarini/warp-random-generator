@@ -2,15 +2,17 @@ async function generateConfig() {
     const button = document.getElementById('generateButton');
     const button_text = document.querySelector('#generateButton .button__text');
     const status = document.getElementById('status');
-	const info = document.getElementById('info');
+    const info = document.getElementById('info');
     const randomNumber = Math.floor(Math.random() * (99 - 10 + 1)) + 10;
 
-    // Изменяем состояние кнопки на загрузку
+    const selectedDNS = getSelectedDNS();
+    const allowedIPs = getSelectedSites();
+
     button.disabled = true;
     button.classList.add("button--loading");
 
     try {
-        const response = await fetch(`/warp`);
+        const response = await fetch(`/warp?dns=${encodeURIComponent(selectedDNS)}&allowedIPs=${encodeURIComponent(allowedIPs)}`);
         const data = await response.json();
 
         if (data.success) {
@@ -33,7 +35,7 @@ async function generateConfig() {
         button.disabled = false;
         button.classList.remove("button--loading");
     }
- info.textContent = status.textContent
+    info.textContent = status.textContent;
 }
 
 async function generateConfig2() {
@@ -119,14 +121,16 @@ async function generateConfig4() {
     const info = document.getElementById('info');
     const randomNumber = Math.floor(Math.random() * (99 - 10 + 1)) + 10;
 
-    // Получаем выбранный DNS
+    // Получаем выбранный DNS и разрешённые IP-адреса
     const selectedDNS = getSelectedDNS();
+    const allowedIPs = getSelectedSites();
 
     button.disabled = true;
     button.classList.add("button--loading");
 
     try {
-        const response = await fetch(`/warp4?dns=${encodeURIComponent(selectedDNS)}`);
+        // Передаём DNS и allowedIPs в запросе
+        const response = await fetch(`/warp4?dns=${encodeURIComponent(selectedDNS)}&allowedIPs=${encodeURIComponent(allowedIPs)}`);
         const data = await response.json();
 
         if (data.success) {
@@ -194,15 +198,17 @@ async function generateConfig6() {
     const button = document.getElementById('generateButton6');
     const button_text = document.querySelector('#generateButton6 .button__text');
     const status = document.getElementById('status');
-	const info = document.getElementById('info');
+    const info = document.getElementById('info');
     const randomNumber = Math.floor(Math.random() * (99 - 10 + 1)) + 10;
 
-    // Изменяем состояние кнопки на загрузку
+    const selectedDNS = getSelectedDNS();
+    const allowedIPs = getSelectedSites();
+
     button.disabled = true;
     button.classList.add("button--loading");
 
     try {
-        const response = await fetch(`/warp6`);
+        const response = await fetch(`/warp6?dns=${encodeURIComponent(selectedDNS)}&allowedIPs=${encodeURIComponent(allowedIPs)}`);
         const data = await response.json();
 
         if (data.success) {
@@ -225,7 +231,7 @@ async function generateConfig6() {
         button.disabled = false;
         button.classList.remove("button--loading");
     }
-	 info.textContent = status.textContent
+    info.textContent = status.textContent;
 }
 
 async function generateConfig7() {
