@@ -116,15 +116,17 @@ async function generateConfig4() {
     const button = document.getElementById('generateButton4');
     const button_text = document.querySelector('#generateButton4 .button__text');
     const status = document.getElementById('status');
-	const info = document.getElementById('info');
+    const info = document.getElementById('info');
     const randomNumber = Math.floor(Math.random() * (99 - 10 + 1)) + 10;
 
-    // Изменяем состояние кнопки на загрузку
+    // Получаем выбранный DNS
+    const selectedDNS = getSelectedDNS();
+
     button.disabled = true;
     button.classList.add("button--loading");
 
     try {
-        const response = await fetch(`/warp4`);
+        const response = await fetch(`/warp4?dns=${encodeURIComponent(selectedDNS)}`);
         const data = await response.json();
 
         if (data.success) {
@@ -147,7 +149,7 @@ async function generateConfig4() {
         button.disabled = false;
         button.classList.remove("button--loading");
     }
-	 info.textContent = status.textContent
+    info.textContent = status.textContent;
 }
 
 async function generateConfig5() {
