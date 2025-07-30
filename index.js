@@ -22,7 +22,9 @@ app.get('/', (req, res) => {
 // Маршрут для генерации конфига
 app.get('/warp', async (req, res) => {
     try {
-        const content = await getWarpConfigLink();
+        const dns = req.query.dns || "1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001";
+        const allowedIPs = req.query.allowedIPs || "0.0.0.0/0, ::/0";
+        const content = await getWarpConfigLink(dns, allowedIPs);
         if (content) {
             res.json({ success: true, content });
         } else {
@@ -65,7 +67,8 @@ app.get('/warp3', async (req, res) => {
 app.get('/warp4', async (req, res) => {
     try {
         const dns = req.query.dns || "1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001"; // Значение по умолчанию
-        const content = await getWarpConfigLink4(dns);
+        const allowedIPs = req.query.allowedIPs || "0.0.0.0/0, ::/0"; // Значение по умолчанию
+        const content = await getWarpConfigLink4(dns, allowedIPs);
         if (content) {
             res.json({ success: true, content });
         } else {
@@ -93,7 +96,9 @@ app.get('/warp5', async (req, res) => {
 
 app.get('/warp6', async (req, res) => {
     try {
-        const content = await getWarpConfigLink6();
+        const dns = req.query.dns || "1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001";
+        const allowedIPs = req.query.allowedIPs || "0.0.0.0/0, ::/0";
+        const content = await getWarpConfigLink6(dns, allowedIPs);
         if (content) {
             res.json({ success: true, content });
         } else {
