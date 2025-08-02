@@ -314,9 +314,10 @@ async function generateConfig9() {
     const button = document.getElementById('generateButton9');
     const button_text = document.querySelector('#generateButton9 .button__text');
     const status = document.getElementById('status');
-	const info = document.getElementById('info');
+    const info = document.getElementById('info');
+    const modal2 = document.getElementById('ThroneModal');
+    const throneText = document.getElementById('throneText');
 
-    // Изменяем состояние кнопки на загрузку
     button.disabled = true;
     button.classList.add("button--loading");
 
@@ -325,16 +326,14 @@ async function generateConfig9() {
         const data = await response.json();
 
         if (data.success) {
-            const downloadFile = () => {
-                const link = document.createElement('a');
-                link.href = 'data:application/octet-stream;base64,' + data.content;
-                link.download = `ThroneWARP.conf`;
-                link.click();
-            };
-
-            button_text.textContent = `Скачать ThroneWARP.conf`;
-            button.onclick = downloadFile;
-            downloadFile();
+            // Декодируем base64 и вставляем в textarea
+            const conf = atob(data.content);
+            throneText.value = conf;
+            
+            // Показываем модальное окно
+            modal2.style.display = "block";
+            
+            button_text.textContent = "WARP";
         } else {
             status.textContent = 'Ошибка: ' + data.message;
         }
@@ -344,7 +343,7 @@ async function generateConfig9() {
         button.disabled = false;
         button.classList.remove("button--loading");
     }
-	 info.textContent = status.textContent
+    info.textContent = status.textContent;
 }
 document.getElementById('generateButton2').onclick = generateConfig2;
 document.getElementById('generateButton3').onclick = generateConfig3;
