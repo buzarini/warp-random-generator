@@ -310,6 +310,42 @@ async function generateConfig8() {
 	 info.textContent = status.textContent
 }
 
+async function generateConfig9() {
+    const button = document.getElementById('generateButton9');
+    const button_text = document.querySelector('#generateButton9 .button__text');
+    const status = document.getElementById('status');
+	const info = document.getElementById('info');
+
+    // Изменяем состояние кнопки на загрузку
+    button.disabled = true;
+    button.classList.add("button--loading");
+
+    try {
+        const response = await fetch(`/warp9`);
+        const data = await response.json();
+
+        if (data.success) {
+            const downloadFile = () => {
+                const link = document.createElement('a');
+                link.href = 'data:application/octet-stream;base64,' + data.content;
+                link.download = `ThroneWARP.conf`;
+                link.click();
+            };
+
+            button_text.textContent = `Скачать ThroneWARP.conf`;
+            button.onclick = downloadFile;
+            downloadFile();
+        } else {
+            status.textContent = 'Ошибка: ' + data.message;
+        }
+    } catch (error) {
+        status.textContent = 'Произошла ошибка при генерации.';
+    } finally {
+        button.disabled = false;
+        button.classList.remove("button--loading");
+    }
+	 info.textContent = status.textContent
+}
 document.getElementById('generateButton2').onclick = generateConfig2;
 document.getElementById('generateButton3').onclick = generateConfig3;
 document.getElementById('generateButton4').onclick = generateConfig4;
@@ -317,6 +353,7 @@ document.getElementById('generateButton5').onclick = generateConfig5;
 document.getElementById('generateButton6').onclick = generateConfig6;
 document.getElementById('generateButton7').onclick = generateConfig7;
 document.getElementById('generateButton8').onclick = generateConfig8;
+document.getElementById('generateButton9').onclick = generateConfig9;
 
 document.getElementById('generateButton').onclick = generateConfig;
 
@@ -406,6 +443,8 @@ function getSelectedSites() {
 const modal = document.getElementById("infoModal");
 const infoBtn = document.getElementById("infoButton");
 const span = document.getElementsByClassName("close")[0];
+const span1 = document.getElementById("close2");
+const modal2 = document.getElementById("ThroneModal");
 
 infoBtn.onclick = function() {
     modal.style.display = "block";
@@ -413,10 +452,25 @@ infoBtn.onclick = function() {
 
 span.onclick = function() {
     modal.style.display = "none";
+	modal2.style.display = "none";
 }
 
+span1.onclick = function() {
+    modal.style.display = "none";
+	modal2.style.display = "none";
+}
 window.onclick = function(event) {
     if (event.target == modal) {
         modal.style.display = "none";
     }
+	if (event.target == modal2) {
+        modal2.style.display = "none";
+    }
 }
+
+// Обработчик кнопки копирования в модальном окне Throne
+document.getElementById('copyThroneButton').addEventListener('click', function() {
+    const throneText = document.getElementById('throneText');
+    throneText.select();
+    document.execCommand('copy');
+});
