@@ -74,7 +74,7 @@ DNS = ${dns}
 [Peer]
 PublicKey = ${peer_pub}
 AllowedIPs = ${allowedIPs}
-Endpoint = 8.47.69.0:1002`;
+Endpoint = 162.159.195.1:2408`;
 
     return conf;
 }
