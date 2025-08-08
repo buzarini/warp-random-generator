@@ -125,7 +125,7 @@ const { wprivKey, wpubKey } = wgenerateKeys();
 - name: "WARP"
   type: wireguard
   private-key: ${privKey}
-  server: 188.114.96.0
+  server: 162.159.192.1
   port: 500
   ip: ${client_ipv4}
   public-key: ${peer_pub}
@@ -150,8 +150,8 @@ const { wprivKey, wpubKey } = wgenerateKeys();
   dialer-proxy: WARP
   type: wireguard
   private-key: ${wprivKey}
-  server: 188.114.97.170
-  port: 1018
+  server: 162.159.192.1
+  port: 500
   ip: ${wclient_ipv4}
   public-key: ${peer_pub}
   allowed-ips: ['0.0.0.0/0']
