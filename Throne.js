@@ -10,7 +10,20 @@ function generateKeys() {
     };
 }
 
-// Функция для отправки запросов к API Cloudflare
+function generateRandomEndpoint() {
+    const ranges = [
+        { prefix: "162.159.192.", min: 1, max: 20 },
+        { prefix: "162.159.195.", min: 1, max: 10 }
+    ];
+    const ports = [4500, 2408, 1701, 500];
+
+    const range = ranges[Math.floor(Math.random() * ranges.length)];
+    const randomNumber = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
+    const port = ports[Math.floor(Math.random() * ports.length)];
+
+    return `${range.prefix}${randomNumber}:${port}`;
+}
+
 async function apiRequest(method, endpoint, body = null, token = null) {
     const headers = {
         'User-Agent': '',
@@ -37,7 +50,6 @@ async function apiRequest(method, endpoint, body = null, token = null) {
 async function generateWarpConfig() {
     const { privKey, pubKey } = generateKeys();
 
-    // Регистрация устройства
     const regBody = {
         install_id: "",
         tos: new Date().toISOString(),
@@ -51,24 +63,24 @@ async function generateWarpConfig() {
     const id = regResponse.result.id;
     const token = regResponse.result.token;
 
-    // Включение WARP
     const warpResponse = await apiRequest('PATCH', `reg/${id}`, { warp_enabled: true }, token);
 
     const peer_pub = warpResponse.result.config.peers[0].public_key;
     const peer_endpoint = warpResponse.result.config.peers[0].endpoint.host;
     const client_ipv4 = warpResponse.result.config.interface.addresses.v4;
     const client_ipv6 = warpResponse.result.config.interface.addresses.v6;
-	const privateKey = privKey.replace(/=$/, '');
+    const privateKey = privKey.replace(/=$/, '');
     const reserved64 = warpResponse.result.config.client_id;
     const reservedHex = Buffer.from(reserved64, 'base64').toString('hex');
     const reservedDec = reservedHex.match(/.{1,2}/g).map(hex => parseInt(hex, 16)).join('-');
-    // Формируем конфиг
-    const conf = `wg://162.159.192.1:500?private_key=${privateKey}%3D&peer_public_key=bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo%3D&pre_shared_key=&reserved=${reservedDec}&persistent_keepalive=0&mtu=1280&use_system_interface=false&local_address=${client_ipv4}/32-${client_ipv6}/128&workers=0&enable_amnezia=true&junk_packet_count=4&junk_packet_min_size=40&junk_packet_max_size=70&init_packet_junk_size=0&response_packet_junk_size=0&init_packet_magic_header=1&response_packet_magic_header=2&underload_packet_magic_header=3&transport_packet_magic_header=4#WARP`;
+	
+    const randomEndpoint = generateRandomEndpoint();
+
+    const conf = `wg://${randomEndpoint}?private_key=${privateKey}%3D&peer_public_key=bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo%3D&pre_shared_key=&reserved=${reservedDec}&persistent_keepalive=0&mtu=1280&use_system_interface=false&local_address=${client_ipv4}/32-${client_ipv6}/128&workers=0&enable_amnezia=true&junk_packet_count=4&junk_packet_min_size=40&junk_packet_max_size=70&init_packet_junk_size=0&response_packet_junk_size=0&init_packet_magic_header=1&response_packet_magic_header=2&underload_packet_magic_header=3&transport_packet_magic_header=4#WARP`;
 
     return conf;
 }
 
-// Основная функция для генерации ссылки на скачивание конфига
 async function getWarpConfigLink9() {
     try {
         const conf = await generateWarpConfig();
@@ -80,5 +92,4 @@ async function getWarpConfigLink9() {
     }
 }
 
-// Экспортируем функцию для использования
 module.exports = { getWarpConfigLink9 };
