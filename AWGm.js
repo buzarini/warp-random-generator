@@ -83,7 +83,7 @@ DNS = ${dns}
 [Peer]
 PublicKey = ${peer_pub}
 AllowedIPs = ${allowedIPs}
-Endpoint = 162.159.192.1:500`;
+Endpoint = engage.cloudflareclient.com:500`;
 
     return conf;
 }
