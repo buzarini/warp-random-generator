@@ -5,6 +5,7 @@ async function generateConfig() {
     const info = document.getElementById('info');
     const randomNumber = Math.floor(Math.random() * (99 - 10 + 1)) + 10;
 
+    // Получаем выбранный DNS и разрешённые IP-адреса
     const selectedDNS = getSelectedDNS();
     const allowedIPs = getSelectedSites();
 
@@ -12,6 +13,7 @@ async function generateConfig() {
     button.classList.add("button--loading");
 
     try {
+        // Передаём DNS и allowedIPs в запросе
         const response = await fetch(`/warp?dns=${encodeURIComponent(selectedDNS)}&allowedIPs=${encodeURIComponent(allowedIPs)}`);
         const data = await response.json();
 
@@ -19,11 +21,11 @@ async function generateConfig() {
             const downloadFile = () => {
                 const link = document.createElement('a');
                 link.href = 'data:application/octet-stream;base64,' + data.content;
-                link.download = `WARPp_${randomNumber}.conf`;
+                link.download = `WARPr192_${randomNumber}.conf`;
                 link.click();
             };
 
-            button_text.textContent = `Скачать WARPp_${randomNumber}.conf`;
+            button_text.textContent = `Скачать WARPr192_${randomNumber}.conf`;
             button.onclick = downloadFile;
             downloadFile();
         } else {
@@ -42,26 +44,30 @@ async function generateConfig2() {
     const button = document.getElementById('generateButton2');
     const button_text = document.querySelector('#generateButton2 .button__text');
     const status = document.getElementById('status');
-	const info = document.getElementById('info');
+    const info = document.getElementById('info');
     const randomNumber = Math.floor(Math.random() * (99 - 10 + 1)) + 10;
 
-    // Изменяем состояние кнопки на загрузку
+    // Получаем выбранный DNS и разрешённые IP-адреса
+    const selectedDNS = getSelectedDNS();
+    const allowedIPs = getSelectedSites();
+
     button.disabled = true;
     button.classList.add("button--loading");
 
     try {
-        const response = await fetch(`/warp2`);
+        // Передаём DNS и allowedIPs в запросе
+        const response = await fetch(`/warp2?dns=${encodeURIComponent(selectedDNS)}&allowedIPs=${encodeURIComponent(allowedIPs)}`);
         const data = await response.json();
 
         if (data.success) {
             const downloadFile = () => {
                 const link = document.createElement('a');
                 link.href = 'data:application/octet-stream;base64,' + data.content;
-                link.download = `KaringWARP_${randomNumber}.conf`;
+                link.download = `WARPr195_${randomNumber}.conf`;
                 link.click();
             };
 
-            button_text.textContent = `Скачать KaringWARP_${randomNumber}.conf`;
+            button_text.textContent = `Скачать WARPr195_${randomNumber}.conf`;
             button.onclick = downloadFile;
             downloadFile();
         } else {
@@ -73,7 +79,7 @@ async function generateConfig2() {
         button.disabled = false;
         button.classList.remove("button--loading");
     }
-	 info.textContent = status.textContent
+    info.textContent = status.textContent;
 }
 
 async function generateConfig3() {
@@ -95,11 +101,11 @@ async function generateConfig3() {
             const downloadFile = () => {
                 const link = document.createElement('a');
                 link.href = 'data:application/octet-stream;base64,' + data.content;
-                link.download = `WARPinWARP_${randomNumber}.conf`;
+                link.download = `WARPr192_${randomNumber}.yaml`;
                 link.click();
             };
 
-            button_text.textContent = `Скачать WARPinWARP_${randomNumber}.conf`;
+            button_text.textContent = `Скачать WARPr192_${randomNumber}.yaml`;
             button.onclick = downloadFile;
             downloadFile();
         } else {
@@ -118,48 +124,6 @@ async function generateConfig4() {
     const button = document.getElementById('generateButton4');
     const button_text = document.querySelector('#generateButton4 .button__text');
     const status = document.getElementById('status');
-    const info = document.getElementById('info');
-    const randomNumber = Math.floor(Math.random() * (99 - 10 + 1)) + 10;
-
-    // Получаем выбранный DNS и разрешённые IP-адреса
-    const selectedDNS = getSelectedDNS();
-    const allowedIPs = getSelectedSites();
-
-    button.disabled = true;
-    button.classList.add("button--loading");
-
-    try {
-        // Передаём DNS и allowedIPs в запросе
-        const response = await fetch(`/warp4?dns=${encodeURIComponent(selectedDNS)}&allowedIPs=${encodeURIComponent(allowedIPs)}`);
-        const data = await response.json();
-
-        if (data.success) {
-            const downloadFile = () => {
-                const link = document.createElement('a');
-                link.href = 'data:application/octet-stream;base64,' + data.content;
-                link.download = `WARPr_${randomNumber}.conf`;
-                link.click();
-            };
-
-            button_text.textContent = `Скачать WARPr_${randomNumber}.conf`;
-            button.onclick = downloadFile;
-            downloadFile();
-        } else {
-            status.textContent = 'Ошибка: ' + data.message;
-        }
-    } catch (error) {
-        status.textContent = 'Произошла ошибка при генерации.';
-    } finally {
-        button.disabled = false;
-        button.classList.remove("button--loading");
-    }
-    info.textContent = status.textContent;
-}
-
-async function generateConfig5() {
-    const button = document.getElementById('generateButton5');
-    const button_text = document.querySelector('#generateButton5 .button__text');
-    const status = document.getElementById('status');
 	const info = document.getElementById('info');
     const randomNumber = Math.floor(Math.random() * (99 - 10 + 1)) + 10;
 
@@ -168,18 +132,18 @@ async function generateConfig5() {
     button.classList.add("button--loading");
 
     try {
-        const response = await fetch(`/warp5`);
+        const response = await fetch(`/warp4`);
         const data = await response.json();
 
         if (data.success) {
             const downloadFile = () => {
                 const link = document.createElement('a');
                 link.href = 'data:application/octet-stream;base64,' + data.content;
-                link.download = `NekoWARP_${randomNumber}.conf`;
+                link.download = `WARPr195_${randomNumber}.yaml`;
                 link.click();
             };
 
-            button_text.textContent = `Скачать NekoWARP_${randomNumber}.conf`;
+            button_text.textContent = `Скачать WARPr195_${randomNumber}.yaml`;
             button.onclick = downloadFile;
             downloadFile();
         } else {
@@ -194,220 +158,20 @@ async function generateConfig5() {
 	 info.textContent = status.textContent
 }
 
-async function generateConfig6() {
-    const button = document.getElementById('generateButton6');
-    const button_text = document.querySelector('#generateButton6 .button__text');
-    const status = document.getElementById('status');
-    const info = document.getElementById('info');
-    const randomNumber = Math.floor(Math.random() * (99 - 10 + 1)) + 10;
-
-    const selectedDNS = getSelectedDNS();
-    const allowedIPs = getSelectedSites();
-
-    button.disabled = true;
-    button.classList.add("button--loading");
-
-    try {
-        const response = await fetch(`/warp6?dns=${encodeURIComponent(selectedDNS)}&allowedIPs=${encodeURIComponent(allowedIPs)}`);
-        const data = await response.json();
-
-        if (data.success) {
-            const downloadFile = () => {
-                const link = document.createElement('a');
-                link.href = 'data:application/octet-stream;base64,' + data.content;
-                link.download = `WARPm_${randomNumber}.conf`;
-                link.click();
-            };
-
-            button_text.textContent = `Скачать WARPm_${randomNumber}.conf`;
-            button.onclick = downloadFile;
-            downloadFile();
-        } else {
-            status.textContent = 'Ошибка: ' + data.message;
-        }
-    } catch (error) {
-        status.textContent = 'Произошла ошибка при генерации.';
-    } finally {
-        button.disabled = false;
-        button.classList.remove("button--loading");
-    }
-    info.textContent = status.textContent;
-}
-
-async function generateConfig7() {
-    const button = document.getElementById('generateButton7');
-    const button_text = document.querySelector('#generateButton7 .button__text');
-    const status = document.getElementById('status');
-	const info = document.getElementById('info');
-    const randomNumber = Math.floor(Math.random() * (99 - 10 + 1)) + 10;
-
-    // Изменяем состояние кнопки на загрузку
-    button.disabled = true;
-    button.classList.add("button--loading");
-
-    try {
-        const response = await fetch(`/warp7`);
-        const data = await response.json();
-
-        if (data.success) {
-            const downloadFile = () => {
-                const link = document.createElement('a');
-                link.href = 'data:application/octet-stream;base64,' + data.content;
-                link.download = `ClashWARP_${randomNumber}.yaml`;
-                link.click();
-            };
-
-            button_text.textContent = `Скачать ClashWARP_${randomNumber}.yaml`;
-            button.onclick = downloadFile;
-            downloadFile();
-        } else {
-            status.textContent = 'Ошибка: ' + data.message;
-        }
-    } catch (error) {
-        status.textContent = 'Произошла ошибка при генерации.';
-    } finally {
-        button.disabled = false;
-        button.classList.remove("button--loading");
-    }
-	 info.textContent = status.textContent
-}
-
-async function generateConfig8() {
-    const button = document.getElementById('generateButton8');
-    const button_text = document.querySelector('#generateButton8 .button__text');
-    const status = document.getElementById('status');
-	const info = document.getElementById('info');
-    const randomNumber = Math.floor(Math.random() * (99 - 10 + 1)) + 10;
-
-    // Изменяем состояние кнопки на загрузку
-    button.disabled = true;
-    button.classList.add("button--loading");
-
-    try {
-        const response = await fetch(`/warp8`);
-        const data = await response.json();
-
-        if (data.success) {
-            const downloadFile = () => {
-                const link = document.createElement('a');
-                link.href = 'data:application/octet-stream;base64,' + data.content;
-                link.download = `HusiWARP_${randomNumber}.conf`;
-                link.click();
-            };
-
-            button_text.textContent = `Скачать HusiWARP_${randomNumber}.conf`;
-            button.onclick = downloadFile;
-            downloadFile();
-        } else {
-            status.textContent = 'Ошибка: ' + data.message;
-        }
-    } catch (error) {
-        status.textContent = 'Произошла ошибка при генерации.';
-    } finally {
-        button.disabled = false;
-        button.classList.remove("button--loading");
-    }
-	 info.textContent = status.textContent
-}
-
-async function generateConfig9() {
-    const button = document.getElementById('generateButton9');
-    const button_text = document.querySelector('#generateButton9 .button__text');
-    const status = document.getElementById('status');
-    const info = document.getElementById('info');
-    const modal2 = document.getElementById('ThroneModal');
-    const throneText = document.getElementById('throneText');
-
-    button.disabled = true;
-    button.classList.add("button--loading");
-
-    try {
-        const response = await fetch(`/warp9`);
-        const data = await response.json();
-
-        if (data.success) {
-            // Декодируем base64 и вставляем в textarea
-            const conf = atob(data.content);
-            throneText.value = conf;
-            
-            // Показываем модальное окно
-            modal2.style.display = "block";
-            
-            button_text.textContent = "WARP";
-        } else {
-            status.textContent = 'Ошибка: ' + data.message;
-        }
-    } catch (error) {
-        status.textContent = 'Произошла ошибка при генерации.';
-    } finally {
-        button.disabled = false;
-        button.classList.remove("button--loading");
-    }
-    info.textContent = status.textContent;
-}
+document.getElementById('generateButton').onclick = generateConfig;
 document.getElementById('generateButton2').onclick = generateConfig2;
 document.getElementById('generateButton3').onclick = generateConfig3;
 document.getElementById('generateButton4').onclick = generateConfig4;
-document.getElementById('generateButton5').onclick = generateConfig5;
-document.getElementById('generateButton6').onclick = generateConfig6;
-document.getElementById('generateButton7').onclick = generateConfig7;
-document.getElementById('generateButton8').onclick = generateConfig8;
-document.getElementById('generateButton9').onclick = generateConfig9;
-
-document.getElementById('generateButton').onclick = generateConfig;
-
-document.getElementById('telegramButton').onclick = function() {
-    window.location.href = 'https://t.me/warp_1_1_1_1';
-}
-
-
-document.getElementById('DonationAlertsButton').onclick = function() {
-    window.location.href = 'https://pay.cloudtips.ru/p/209310e4';
-}
-
-document.getElementById('BoostyNewButton').onclick = function() {
-    window.location.href = 'https://boosty.to/warphelp/donate';
-}
-
-document.getElementById('BoostyButton').onclick = function() {
-    const newButtons = document.getElementById('newButtons');
-
-    if (newButtons.classList.contains('show')) {
-        // Если блок видим, скрываем его с анимацией
-        newButtons.classList.remove('show');
-        setTimeout(() => {
-            this.style.display = 'block'; // Показываем кнопку BoostyButton
-        }, 500); // Задержка должна соответствовать длительности анимации
-    } else {
-        // Если блок скрыт, показываем его с анимацией
-        this.style.display = 'none';
-        newButtons.classList.add('show');
-
-        // Добавляем задержку перед прокруткой
-        setTimeout(() => {
-            // Прокручиваем страницу до самого низа
-            window.scrollTo({
-                top: document.body.scrollHeight, // Прокручиваем до конца страницы
-                behavior: 'smooth' // Плавная прокрутка
-            });
-        }, 300); // Увеличиваем задержку до 500 мс
-    }
-};
-
 
 document.getElementById('githubButton').onclick = function() {
     window.location.href = 'https://chatter-bike-3df.notion.site/1f72684dab0d8092a582ed6328632d06';
-}
-
-document.getElementById('promoButton').onclick = function() {
-    window.location.href = 'https://chatter-bike-3df.notion.site/Amnezia-Premium-1f72684dab0d8013a057ed6562c8bdca';
 }
 
 function getSelectedDNS() {
     if (document.getElementById('dns1').checked) {
         return "1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001";
     } else if (document.getElementById('dns2').checked) {
-        return "45.95.233.23, 2a12:5940:cf09::2, 64.188.98.242, 2a01:ecc0:2c1:2::2";
+        return "45.95.233.23, 2a05:541:104:7f::1, 64.188.98.242, 2a01:ecc0:2c1:2::2";
     } else if (document.getElementById('dns3').checked) {
         return "176.99.11.77, 80.78.247.254, 2a00:f940:2:4:2::5d1b, 2a00:f940:2:4:2::21ed";
     }
@@ -442,8 +206,6 @@ function getSelectedSites() {
 const modal = document.getElementById("infoModal");
 const infoBtn = document.getElementById("infoButton");
 const span = document.getElementsByClassName("close")[0];
-const span1 = document.getElementById("close2");
-const modal2 = document.getElementById("ThroneModal");
 
 infoBtn.onclick = function() {
     modal.style.display = "block";
@@ -451,25 +213,10 @@ infoBtn.onclick = function() {
 
 span.onclick = function() {
     modal.style.display = "none";
-	modal2.style.display = "none";
 }
 
-span1.onclick = function() {
-    modal.style.display = "none";
-	modal2.style.display = "none";
-}
 window.onclick = function(event) {
     if (event.target == modal) {
         modal.style.display = "none";
     }
-	if (event.target == modal2) {
-        modal2.style.display = "none";
-    }
 }
-
-// Обработчик кнопки копирования в модальном окне Throne
-document.getElementById('copyThroneButton').addEventListener('click', function() {
-    const throneText = document.getElementById('throneText');
-    throneText.select();
-    document.execCommand('copy');
-});
