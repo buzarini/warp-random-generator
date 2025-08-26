@@ -137,11 +137,11 @@ async function generateConfig4() {
             const downloadFile = () => {
                 const link = document.createElement('a');
                 link.href = 'data:application/octet-stream;base64,' + data.content;
-                link.download = `WARPr_${randomNumber}.conf`;
+                link.download = `WARPm2_${randomNumber}.conf`;
                 link.click();
             };
 
-            button_text.textContent = `Скачать WARPr_${randomNumber}.conf`;
+            button_text.textContent = `Скачать WARPm2_${randomNumber}.conf`;
             button.onclick = downloadFile;
             downloadFile();
         } else {
@@ -215,11 +215,11 @@ async function generateConfig6() {
             const downloadFile = () => {
                 const link = document.createElement('a');
                 link.href = 'data:application/octet-stream;base64,' + data.content;
-                link.download = `WARPm_${randomNumber}.conf`;
+                link.download = `WARPm1_${randomNumber}.conf`;
                 link.click();
             };
 
-            button_text.textContent = `Скачать WARPm_${randomNumber}.conf`;
+            button_text.textContent = `Скачать WARPm1_${randomNumber}.conf`;
             button.onclick = downloadFile;
             downloadFile();
         } else {
