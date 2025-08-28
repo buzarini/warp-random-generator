@@ -2,6 +2,21 @@ const fetch = require('node-fetch');
 const nacl = require('tweetnacl');
 const { Buffer } = require('buffer');
 
+function generateRandomEndpoint() {
+    const prefixes = ["162.159.192.", "162.159.195.", "engage.cloudflareclient.com"];
+    const ports = [4500, 2408, 1701, 500];
+
+    const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+    const randomNumber = Math.floor(Math.random() * 10) + 1;
+    const port = ports[Math.floor(Math.random() * ports.length)];
+
+    if (prefix === "engage.cloudflareclient.com") {
+        return `${prefix}:${port}`;
+    } else {
+        return `${prefix}${randomNumber}:${port}`;
+    }
+}
+
 function generateKeys() {
     const keyPair = nacl.box.keyPair();
     return {
@@ -56,13 +71,14 @@ async function generateWarpConfig(dns = "1.1.1.1, 2606:4700:4700::1111, 1.0.0.1,
     const client_ipv4 = warpResponse.result.config.interface.addresses.v4;
     const client_ipv6 = warpResponse.result.config.interface.addresses.v6;
 
+    const randomEndpoint = generateRandomEndpoint();
     const conf = `[Interface]
 PrivateKey = ${privKey}
 S1 = 0
 S2 = 0
-Jc = 120
-Jmin = 23
-Jmax = 911
+Jc = 4
+Jmin = 40
+Jmax = 70
 H1 = 1
 H2 = 2
 H3 = 3
@@ -74,7 +90,7 @@ DNS = ${dns}
 [Peer]
 PublicKey = ${peer_pub}
 AllowedIPs = ${allowedIPs}
-Endpoint = engage.cloudflareclient.com:500`;
+Endpoint = ${randomEndpoint}`;
 
     return conf;
 }
