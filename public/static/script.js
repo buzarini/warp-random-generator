@@ -12,7 +12,7 @@ async function generateConfig() {
     button.classList.add("button--loading");
 
     try {
-        const response = await fetch(`/warp?dns=${encodeURIComponent(selectedDNS)}&allowedIPs=${encodeURIComponent(allowedIPs)}`);
+        const response = await fetch(`/warpd?dns=${encodeURIComponent(selectedDNS)}&allowedIPs=${encodeURIComponent(allowedIPs)}`);
         const data = await response.json();
 
         if (data.success) {
@@ -130,7 +130,7 @@ async function generateConfig4() {
 
     try {
         // Передаём DNS и allowedIPs в запросе
-        const response = await fetch(`/warp4?dns=${encodeURIComponent(selectedDNS)}&allowedIPs=${encodeURIComponent(allowedIPs)}`);
+        const response = await fetch(`/warp4d?dns=${encodeURIComponent(selectedDNS)}&allowedIPs=${encodeURIComponent(allowedIPs)}`);
         const data = await response.json();
 
         if (data.success) {
@@ -208,7 +208,7 @@ async function generateConfig6() {
     button.classList.add("button--loading");
 
     try {
-        const response = await fetch(`/warp6?dns=${encodeURIComponent(selectedDNS)}&allowedIPs=${encodeURIComponent(allowedIPs)}`);
+        const response = await fetch(`/warp6d?dns=${encodeURIComponent(selectedDNS)}&allowedIPs=${encodeURIComponent(allowedIPs)}`);
         const data = await response.json();
 
         if (data.success) {
