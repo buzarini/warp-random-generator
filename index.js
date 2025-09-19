@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
 });
 
 // Маршрут для генерации конфига
-app.get('/warp', async (req, res) => {
+app.get('/warp+', async (req, res) => {
     try {
         const dns = req.query.dns || "1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001";
         const allowedIPs = req.query.allowedIPs || "0.0.0.0/0, ::/0";
@@ -65,7 +65,7 @@ app.get('/warp3', async (req, res) => {
     }
 });
 
-app.get('/warp4', async (req, res) => {
+app.get('/warp4+', async (req, res) => {
     try {
         const dns = req.query.dns || "1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001"; 
         const allowedIPs = req.query.allowedIPs || "0.0.0.0/0, ::/0"; 
@@ -95,7 +95,7 @@ app.get('/warp5', async (req, res) => {
     }
 });
 
-app.get('/warp6', async (req, res) => {
+app.get('/warp6+', async (req, res) => {
     try {
         const dns = req.query.dns || "1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001";
         const allowedIPs = req.query.allowedIPs || "0.0.0.0/0, ::/0";
