@@ -8,6 +8,7 @@ const { getWarpConfigLink6 } = require('./AWGm');
 const { getWarpConfigLink7 } = require('./Clash');
 const { getWarpConfigLink8 } = require('./Husi');
 const { getWarpConfigLink9 } = require('./Throne');
+const { getWarpConfigLink10 } = require('./Clash15');
 const path = require('path');
 
 const app = express();
@@ -21,7 +22,7 @@ app.get('/', (req, res) => {
 });
 
 // Маршрут для генерации конфига
-app.get('/warpd', async (req, res) => {
+app.get('/warps', async (req, res) => {
     try {
         const dns = req.query.dns || "1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001";
         const allowedIPs = req.query.allowedIPs || "0.0.0.0/0, ::/0";
@@ -65,7 +66,7 @@ app.get('/warp3', async (req, res) => {
     }
 });
 
-app.get('/warp4d', async (req, res) => {
+app.get('/warp4s', async (req, res) => {
     try {
         const dns = req.query.dns || "1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001"; 
         const allowedIPs = req.query.allowedIPs || "0.0.0.0/0, ::/0"; 
@@ -95,7 +96,7 @@ app.get('/warp5', async (req, res) => {
     }
 });
 
-app.get('/warp6d', async (req, res) => {
+app.get('/warp6s', async (req, res) => {
     try {
         const dns = req.query.dns || "1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001";
         const allowedIPs = req.query.allowedIPs || "0.0.0.0/0, ::/0";
@@ -142,6 +143,20 @@ app.get('/warp8', async (req, res) => {
 app.get('/warp9', async (req, res) => {
     try {
         const content = await getWarpConfigLink9();
+        if (content) {
+            res.json({ success: true, content });
+        } else {
+            res.status(500).json({ success: false, message: 'Не удалось сгенерировать конфиг.' });
+        }
+    } catch (error) {
+        console.error('Ошибка при обработке запроса:', error);
+        res.status(500).json({ success: false, message: 'Произошла ошибка на сервере.' });
+    }
+});
+
+app.get('/warp10', async (req, res) => {
+    try {
+        const content = await getWarpConfigLink10();
         if (content) {
             res.json({ success: true, content });
         } else {
