@@ -12,7 +12,7 @@ async function generateConfig() {
     button.classList.add("button--loading");
 
     try {
-        const response = await fetch(`/warpd?dns=${encodeURIComponent(selectedDNS)}&allowedIPs=${encodeURIComponent(allowedIPs)}`);
+        const response = await fetch(`/warps?dns=${encodeURIComponent(selectedDNS)}&allowedIPs=${encodeURIComponent(allowedIPs)}`);
         const data = await response.json();
 
         if (data.success) {
@@ -130,7 +130,7 @@ async function generateConfig4() {
 
     try {
         // Передаём DNS и allowedIPs в запросе
-        const response = await fetch(`/warp4d?dns=${encodeURIComponent(selectedDNS)}&allowedIPs=${encodeURIComponent(allowedIPs)}`);
+        const response = await fetch(`/warp4s?dns=${encodeURIComponent(selectedDNS)}&allowedIPs=${encodeURIComponent(allowedIPs)}`);
         const data = await response.json();
 
         if (data.success) {
@@ -208,7 +208,7 @@ async function generateConfig6() {
     button.classList.add("button--loading");
 
     try {
-        const response = await fetch(`/warp6d?dns=${encodeURIComponent(selectedDNS)}&allowedIPs=${encodeURIComponent(allowedIPs)}`);
+        const response = await fetch(`/warp6s?dns=${encodeURIComponent(selectedDNS)}&allowedIPs=${encodeURIComponent(allowedIPs)}`);
         const data = await response.json();
 
         if (data.success) {
@@ -345,6 +345,45 @@ async function generateConfig9() {
     }
     info.textContent = status.textContent;
 }
+
+async function generateConfig10() {
+    const button = document.getElementById('generateButton10');
+    const button_text = document.querySelector('#generateButton10 .button__text');
+    const status = document.getElementById('status');
+	const info = document.getElementById('info');
+    const randomNumber = Math.floor(Math.random() * (99 - 10 + 1)) + 10;
+
+    // Изменяем состояние кнопки на загрузку
+    button.disabled = true;
+    button.classList.add("button--loading");
+
+    try {
+        const response = await fetch(`/warp10`);
+        const data = await response.json();
+
+        if (data.success) {
+            const downloadFile = () => {
+                const link = document.createElement('a');
+                link.href = 'data:application/octet-stream;base64,' + data.content;
+                link.download = `ClashWARP_${randomNumber}.yaml`;
+                link.click();
+            };
+
+            button_text.textContent = `Скачать ClashWARP_${randomNumber}.yaml`;
+            button.onclick = downloadFile;
+            downloadFile();
+        } else {
+            status.textContent = 'Ошибка: ' + data.message;
+        }
+    } catch (error) {
+        status.textContent = 'Произошла ошибка при генерации.';
+    } finally {
+        button.disabled = false;
+        button.classList.remove("button--loading");
+    }
+	 info.textContent = status.textContent
+}
+
 document.getElementById('generateButton2').onclick = generateConfig2;
 document.getElementById('generateButton3').onclick = generateConfig3;
 document.getElementById('generateButton4').onclick = generateConfig4;
@@ -353,6 +392,7 @@ document.getElementById('generateButton6').onclick = generateConfig6;
 document.getElementById('generateButton7').onclick = generateConfig7;
 document.getElementById('generateButton8').onclick = generateConfig8;
 document.getElementById('generateButton9').onclick = generateConfig9;
+document.getElementById('generateButton10').onclick = generateConfig10;
 
 document.getElementById('generateButton').onclick = generateConfig;
 
