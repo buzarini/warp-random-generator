@@ -128,13 +128,14 @@ const { wprivKey, wpubKey } = wgenerateKeys();
   server: 162.159.192.1
   port: 500
   ip: ${client_ipv4}
+  ipv6: ${client_ipv6}
   public-key: ${peer_pub}
   allowed-ips: ['0.0.0.0/0']
   reserved: [${reservedDec}]
   udp: true
   mtu: 1280
   remote-dns-resolve: true
-  dns: [1.1.1.1, 1.0.0.1]
+  dns: [1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001]
   amnezia-wg-option:
    jc: 120
    jmin: 23
@@ -153,18 +154,19 @@ const { wprivKey, wpubKey } = wgenerateKeys();
   server: 162.159.192.1
   port: 500
   ip: ${wclient_ipv4}
+  ipv6: ${wclient_ipv6}
   public-key: ${peer_pub}
   allowed-ips: ['0.0.0.0/0']
   reserved: [${wreservedDec}]
   udp: true
   mtu: 1200
   remote-dns-resolve: true
-  dns: [1.1.1.1, 1.0.0.1]
+  dns: [1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001]
   
 proxy-groups:
 - name: Cloudflare
   type: select
-  icon: https://developers.cloudflare.com/_astro/logo.p_ySeMR1.svg
+  icon: https://www.vectorlogo.zone/logos/cloudflare/cloudflare-icon.svg
   proxies:
     - WARP
     - WARP in WARP
