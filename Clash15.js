@@ -108,7 +108,7 @@ async function generateWarpConfig() {
   type: wireguard
   private-key: ${privKey}
   server: 162.159.192.1
-  port: 500
+  port: 4500
   ip: ${client_ipv4}
   ipv6: ${client_ipv6}  
   public-key: ${peer_pub}
