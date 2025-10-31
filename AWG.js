@@ -95,7 +95,7 @@ Endpoint = ${randomEndpoint}`;
     return conf;
 }
 
-async function getWarpConfigLink(dns, allowedIPs) {
+async function getWarpConfigLink1(dns, allowedIPs) {
     try {
         const conf = await generateWarpConfig(dns, allowedIPs);
         const confBase64 = Buffer.from(conf).toString('base64');
@@ -106,4 +106,4 @@ async function getWarpConfigLink(dns, allowedIPs) {
     }
 }
 
-module.exports = { getWarpConfigLink };
+module.exports = { getWarpConfigLink1 };
