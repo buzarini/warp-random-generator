@@ -88,7 +88,7 @@ Endpoint = engage.cloudflareclient.com:4500`;
     return conf;
 }
 
-async function getWarpConfigLink6(dns, allowedIPs) {
+async function getWarpConfigLink2(dns, allowedIPs) {
     try {
         const conf = await generateWarpConfig(dns, allowedIPs);
         const confBase64 = Buffer.from(conf).toString('base64');
@@ -99,4 +99,4 @@ async function getWarpConfigLink6(dns, allowedIPs) {
     }
 }
 
-module.exports = { getWarpConfigLink6 };
+module.exports = { getWarpConfigLink2 };
