@@ -80,7 +80,7 @@ async function generateWarpConfig() {
 }
 
 // Основная функция для генерации ссылки на скачивание конфига
-async function getWarpConfigLink5() {
+async function getWarpConfigLink7() {
     try {
         const conf = await generateWarpConfig();
         const confBase64 = Buffer.from(conf).toString('base64');
@@ -92,4 +92,4 @@ async function getWarpConfigLink5() {
 }
 
 // Экспортируем функцию для использования
-module.exports = { getWarpConfigLink5 };
+module.exports = { getWarpConfigLink7 };
