@@ -341,6 +341,46 @@ async function generateConfig9() {
 	 info.textContent = status.textContent
 }
 
+async function generateConfig10() {
+    const button = document.getElementById('generateButton10');
+    const button_text = document.querySelector('#generateButton10 .button__text');
+    const status = document.getElementById('status');
+    const info = document.getElementById('info');
+    const randomNumber = Math.floor(Math.random() * (99 - 10 + 1)) + 10;
+
+    const selectedDNS = getSelectedDNS();
+    const allowedIPs = getSelectedSites();
+
+    button.disabled = true;
+    button.classList.add("button--loading");
+
+    try {
+        const response = await fetch(`/warp10w?dns=${encodeURIComponent(selectedDNS)}&allowedIPs=${encodeURIComponent(allowedIPs)}`);
+        const data = await response.json();
+
+        if (data.success) {
+            const downloadFile = () => {
+                const link = document.createElement('a');
+                link.href = 'data:application/octet-stream;base64,' + data.content;
+                link.download = `WARPw_${randomNumber}.conf`;
+                link.click();
+            };
+
+            button_text.textContent = `Скачать WARPw_${randomNumber}.conf`;
+            button.onclick = downloadFile;
+            downloadFile();
+        } else {
+            status.textContent = 'Ошибка: ' + data.message;
+        }
+    } catch (error) {
+        status.textContent = 'Произошла ошибка при генерации.';
+    } finally {
+        button.disabled = false;
+        button.classList.remove("button--loading");
+    }
+    info.textContent = status.textContent;
+}
+
 document.getElementById('generateButton1').onclick = generateConfig1;
 document.getElementById('generateButton2').onclick = generateConfig2;
 document.getElementById('generateButton3').onclick = generateConfig3;
@@ -350,6 +390,7 @@ document.getElementById('generateButton6').onclick = generateConfig6;
 document.getElementById('generateButton7').onclick = generateConfig7;
 document.getElementById('generateButton8').onclick = generateConfig8;
 document.getElementById('generateButton9').onclick = generateConfig9;
+document.getElementById('generateButton10').onclick = generateConfig10;
 
 document.getElementById('telegramButton').onclick = function() {
     window.location.href = 'https://t.me/warp_1_1_1_1';
