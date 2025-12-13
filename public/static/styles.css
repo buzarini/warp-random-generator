@@ -19,7 +19,7 @@ body {
 }
 .grid-container {
     display: grid;
-    grid-template-columns: 1fr; /* Два столбца */
+    grid-template-columns: repeat(2, 1fr); /* Два столбца */
     gap: 20px; /* Расстояние между контейнерами */
     width: 100%;
     max-width: 700px; /* Увеличиваем максимальную ширину, чтобы вместить два контейнера */
@@ -36,7 +36,7 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     width: 95%; /* Занимает всю ширину */
-    max-width: 360px; /* Уменьшаем ширину контейнера */
+    max-width: 300px; /* Уменьшаем ширину контейнера */
     margin: 0 auto; /* Центрируем и добавляем отступ снизу */
 }
 
@@ -122,10 +122,10 @@ button.button--loading {
     display: none;
 }
 
-#generateButton5,#generateButton2,#generateButton3,#generateButton7 {
+#generateButton2,#generateButton3,#generateButton7 {
     background: linear-gradient(90deg, #eeac43, #f15874);
 }
-#generateButton1,#generateButton6,#generateButton4,#generateButton8,#generateButton9,#generateButton10 {
+#generateButton1,#generateButton5,#generateButton6,#generateButton4,#generateButton8,#generateButton9,#generateButton10 {
     background: linear-gradient(90deg, #eeac43, #f15874);margin-bottom: 6px;
 }
 
@@ -179,7 +179,6 @@ button:disabled {
 	box-shadow: 0 0 0 1px red inset;
 	padding: 15px;
 	margin: 0 auto 20px;
-	width: 370px;
 }
 
 #status:empty {
