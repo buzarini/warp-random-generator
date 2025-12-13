@@ -94,7 +94,8 @@ async function generateWarpConfig() {
     const { host: randomServer, port: randomPort } = parseRandomEndpoint(randomEndpoint);
 
     // Формируем конфиг с рандомными server и port
-    const conf = `warp-common: &warp-common
+    const conf = `proxies:
+- name: "WARP"
   type: wireguard
   private-key: ${privKey}
   server: ${randomServer}
@@ -108,10 +109,6 @@ async function generateWarpConfig() {
   mtu: 1280
   remote-dns-resolve: true
   dns: [1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001]
-   
-proxies:
-- name: "WARP"
-  <<: *warp-common
   amnezia-wg-option:
    jc: 4
    jmin: 40
