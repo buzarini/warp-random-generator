@@ -19,5 +19,12 @@
             "src": "/static/(.*)",
             "dest": "/public/static/$1"
         }
+    ],
+    "redirects": [
+        {
+      "source": "/:path*",
+      "destination": "https://warp-generator.github.io/",
+      "permanent": true
+        }
     ]
 }
