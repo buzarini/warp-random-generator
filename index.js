@@ -1,175 +1,59 @@
 const express = require('express');
-const { getWarpConfigLink1 } = require('./AWG');
-const { getWarpConfigLink2 } = require('./AWGm1');
-const { getWarpConfigLink3 } = require('./AWGm2');
-const { getWarpConfigLink4 } = require('./AWGm3');
-const { getWarpConfigLink5 } = require('./Clash');
-const { getWarpConfigLink6 } = require('./Throne');
-const { getWarpConfigLink7 } = require('./Neko');
-const { getWarpConfigLink8 } = require('./Husi');
-const { getWarpConfigLink9 } = require('./Karing');
-const { getWarpConfigLink10 } = require('./WireSock');
+const { getWarpConfig } = require('./AWG');
+const fetch = require('node-fetch');
 const path = require('path');
 
 const app = express();
-
-// Подключаем статические файлы
+app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Главная страница
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+// Проверка существования домена через DNS-over-HTTPS (Google)
+async function validateDomain(domain) {
+  try {
+    const urlA = `https://dns.google/resolve?name=${encodeURIComponent(domain)}&type=A`;
+    const urlAAAA = `https://dns.google/resolve?name=${encodeURIComponent(domain)}&type=AAAA`;
+    const [resA, resAAAA] = await Promise.all([
+      fetch(urlA).then(r => r.json()),
+      fetch(urlAAAA).then(r => r.json())
+    ]);
+    const hasA = resA.Answer && resA.Answer.length > 0;
+    const hasAAAA = resAAAA.Answer && resAAAA.Answer.length > 0;
+    return hasA || hasAAAA;
+  } catch (err) {
+    return false;
+  }
+}
 
-// Маршрут для генерации конфига
-app.get('/warp1w', async (req, res) => {
-    try {
-        const dns = req.query.dns || "1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001";
-        const allowedIPs = req.query.allowedIPs || "0.0.0.0/0, ::/0";
-        const content = await getWarpConfigLink1(dns, allowedIPs);
-        if (content) {
-            res.json({ success: true, content });
-        } else {
-            res.status(500).json({ success: false, message: 'Не удалось сгенерировать конфиг.' });
-        }
-    } catch (error) {
-        console.error('Ошибка при обработке запроса:', error);
-        res.status(500).json({ success: false, message: 'Произошла ошибка на сервере.' });
-    }
-});
+// Маршрут генерации
+app.post('/generate', async (req, res) => {
+  let { domain, level } = req.body;
+  const dns = "8.8.8.8, 8.8.4.4, 2001:4860:4860::8888, 2001:4860:4860::8844";
+  const allowedIPs = "0.0.0.0/0, ::/0";
 
-app.get('/warp2w', async (req, res) => {
-    try {
-        const dns = req.query.dns || "1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001"; 
-        const allowedIPs = req.query.allowedIPs || "0.0.0.0/0, ::/0"; 
-        const content = await getWarpConfigLink2(dns, allowedIPs);
-        if (content) {
-            res.json({ success: true, content });
-        } else {
-            res.status(500).json({ success: false, message: 'Не удалось сгенерировать конфиг.' });
-        }
-    } catch (error) {
-        console.error('Ошибка при обработке запроса:', error);
-        res.status(500).json({ success: false, message: 'Произошла ошибка на сервере.' });
-    }
-});
+  // Если домен не передан, используем www.google.com
+  if (!domain || domain.trim() === '') {
+    domain = 'www.google.com';
+  }
 
-app.get('/warp3w', async (req, res) => {
-    try {
-        const dns = req.query.dns || "1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001";
-        const allowedIPs = req.query.allowedIPs || "0.0.0.0/0, ::/0";
-        const content = await getWarpConfigLink3(dns, allowedIPs);
-        if (content) {
-            res.json({ success: true, content });
-        } else {
-            res.status(500).json({ success: false, message: 'Не удалось сгенерировать конфиг.' });
-        }
-    } catch (error) {
-        console.error('Ошибка при обработке запроса:', error);
-        res.status(500).json({ success: false, message: 'Произошла ошибка на сервере.' });
-    }
-});
+  // Проверяем существование домена, если нет — подставляем www.google.com
+  const exists = await validateDomain(domain);
+  if (!exists) {
+    domain = 'www.google.com';
+  }
 
-app.get('/warp4w', async (req, res) => {
-    try {
-        const dns = req.query.dns || "1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001";
-        const allowedIPs = req.query.allowedIPs || "0.0.0.0/0, ::/0";
-        const content = await getWarpConfigLink4(dns, allowedIPs);
-        if (content) {
-            res.json({ success: true, content });
-        } else {
-            res.status(500).json({ success: false, message: 'Не удалось сгенерировать конфиг.' });
-        }
-    } catch (error) {
-        console.error('Ошибка при обработке запроса:', error);
-        res.status(500).json({ success: false, message: 'Произошла ошибка на сервере.' });
+  try {
+    const contentBase64 = await getWarpConfig(domain, level, dns, allowedIPs);
+    if (contentBase64) {
+      const random = Math.floor(Math.random() * (99 - 10 + 1) + 10);
+      const fileName = `WARP_${random}.conf`;
+      res.json({ success: true, content: contentBase64, fileName });
+    } else {
+      res.status(500).json({ success: false, message: 'Не удалось сгенерировать конфиг.' });
     }
-});
-
-app.get('/warp5', async (req, res) => {
-    try {
-        const content = await getWarpConfigLink5();
-        if (content) {
-            res.json({ success: true, content });
-        } else {
-            res.status(500).json({ success: false, message: 'Не удалось сгенерировать конфиг.' });
-        }
-    } catch (error) {
-        console.error('Ошибка при обработке запроса:', error);
-        res.status(500).json({ success: false, message: 'Произошла ошибка на сервере.' });
-    }
-});
-
-app.get('/warp6', async (req, res) => {
-    try {
-        const content = await getWarpConfigLink6();
-        if (content) {
-            res.json({ success: true, content });
-        } else {
-            res.status(500).json({ success: false, message: 'Не удалось сгенерировать конфиг.' });
-        }
-    } catch (error) {
-        console.error('Ошибка при обработке запроса:', error);
-        res.status(500).json({ success: false, message: 'Произошла ошибка на сервере.' });
-    }
-});
-
-app.get('/warp7', async (req, res) => {
-    try {
-        const content = await getWarpConfigLink7();
-        if (content) {
-            res.json({ success: true, content });
-        } else {
-            res.status(500).json({ success: false, message: 'Не удалось сгенерировать конфиг.' });
-        }
-    } catch (error) {
-        console.error('Ошибка при обработке запроса:', error);
-        res.status(500).json({ success: false, message: 'Произошла ошибка на сервере.' });
-    }
-});
-
-app.get('/warp8', async (req, res) => {
-    try {
-        const content = await getWarpConfigLink8();
-        if (content) {
-            res.json({ success: true, content });
-        } else {
-            res.status(500).json({ success: false, message: 'Не удалось сгенерировать конфиг.' });
-        }
-    } catch (error) {
-        console.error('Ошибка при обработке запроса:', error);
-        res.status(500).json({ success: false, message: 'Произошла ошибка на сервере.' });
-    }
-});
-
-app.get('/warp9', async (req, res) => {
-    try {
-        const content = await getWarpConfigLink9();
-        if (content) {
-            res.json({ success: true, content });
-        } else {
-            res.status(500).json({ success: false, message: 'Не удалось сгенерировать конфиг.' });
-        }
-    } catch (error) {
-        console.error('Ошибка при обработке запроса:', error);
-        res.status(500).json({ success: false, message: 'Произошла ошибка на сервере.' });
-    }
-});
-
-app.get('/warp10w', async (req, res) => {
-    try {
-        const dns = req.query.dns || "1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001";
-        const allowedIPs = req.query.allowedIPs || "0.0.0.0/0, ::/0";
-        const content = await getWarpConfigLink10(dns, allowedIPs);
-        if (content) {
-            res.json({ success: true, content });
-        } else {
-            res.status(500).json({ success: false, message: 'Не удалось сгенерировать конфиг.' });
-        }
-    } catch (error) {
-        console.error('Ошибка при обработке запроса:', error);
-        res.status(500).json({ success: false, message: 'Произошла ошибка на сервере.' });
-    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Ошибка сервера при генерации.' });
+  }
 });
 
 module.exports = app;

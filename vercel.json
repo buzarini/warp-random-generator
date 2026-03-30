@@ -13,8 +13,11 @@
     "routes": [
         {
             "src": "/(.*)",
-            "status": 308,
-            "headers": { "Location": "https://warp-generator.github.io/" }
+            "dest": "index.js"
+        },
+        {
+            "src": "/static/(.*)",
+            "dest": "/public/static/$1"
         }
     ]
 }

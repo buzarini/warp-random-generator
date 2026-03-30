@@ -1,7 +1,14 @@
-### Deploy with Vercel
+# WARP Random Generator
 
- [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/DikozImpact/warp-config-generator&repository-name=warp-config-generator)
-- Alternatively can be deployed with [cli](https://vercel.com/docs/cli):
-  `vercel deploy`
-- Serve locally: `vercel dev`
-- Vercel _Functions_ [limitations](https://vercel.com/docs/functions/limitations) (with _Edge_ runtime)
+Генератор конфигураций WARP для AmneziaWG.
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/buzarini/warp-random-generator)
+
+## Благодарности
+
+- Идея основана на [warp-config-generator](https://github.com/DikozImpact/warp-config-generator) от [DikozImpact](https://github.com/DikozImpact)
+- Код `quic.js` взят из [mini_quic_generator](https://github.com/SagePtr/mini_quic_generator) от [SagePtr](https://github.com/SagePtr)
+
+## Лицензия
+
+MIT
